@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG") == "True"
 
 ALLOWED_HOSTS = ["*"]
-
+"https://github.com/aryansuryawanshi20/backend-pps-llms.git"
 
 # Application definition
 
