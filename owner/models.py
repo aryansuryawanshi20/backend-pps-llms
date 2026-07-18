@@ -1,15 +1,30 @@
 from django.db import models
 
 
-# =========================
+# ==========================
 # Student
-# =========================
+# ==========================
 
 class Student(models.Model):
 
     name = models.CharField(max_length=100)
 
     email = models.EmailField(unique=True)
+
+    phone = models.CharField(max_length=20)
+
+    degree = models.CharField(max_length=100)
+
+    semester = models.CharField(max_length=50)
+
+    college = models.CharField(max_length=200)
+
+    # Multiple courses comma separated
+    course = models.TextField()
+
+    transaction_id = models.CharField(max_length=100)
+
+    payment_screenshot = models.URLField(blank=True)
 
     username = models.CharField(max_length=100, blank=True)
 
@@ -23,9 +38,9 @@ class Student(models.Model):
         return self.name
 
 
-# =========================
+# ==========================
 # Course
-# =========================
+# ==========================
 
 class Course(models.Model):
 
@@ -41,13 +56,16 @@ class Course(models.Model):
         return self.title
 
 
-# =========================
+# ==========================
 # Video
-# =========================
+# ==========================
 
 class Video(models.Model):
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE
+    )
 
     title = models.CharField(max_length=200)
 
