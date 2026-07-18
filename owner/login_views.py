@@ -41,3 +41,28 @@ def student_login(request):
             "message":"Invalid Credentials"
 
         })
+        
+TEMP_STUDENTS = [
+    {
+        "username": "JAVA001",
+        "password": "java123",
+        "name": "Demo Java Student",
+        "course": ["Java Programming"]
+    },
+    {
+        "username": "C001",
+        "password": "c123",
+        "name": "Demo C Student",
+        "course": ["C Programming"]
+    },
+    {
+        "username": "DEMO001",
+        "password": "demo123",
+        "name": "Demo Student",
+        "course": [
+            "Java Programming",
+            "C Programming",
+            "Prompt Engineering"
+        ]
+    }
+]        
