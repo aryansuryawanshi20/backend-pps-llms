@@ -49,7 +49,6 @@ def generate_password():
     ) 
 
 @api_view(["POST"])
-
 def approve_student(request):
 
     try:
@@ -61,15 +60,17 @@ def approve_student(request):
         student.approved = True
         student.save()
 
+        print("HOST:", settings.EMAIL_HOST)
+        print("PORT:", settings.EMAIL_PORT)
+        print("USER:", settings.EMAIL_HOST_USER)
+        print("TLS:", settings.EMAIL_USE_TLS)
+
         send_mail(
             subject="Welcome To ProPython Solutions",
-
             message=f"""
 Hello {student.name},
 
 Congratulations!
-
-Your account has been approved.
 
 Username:
 {student.username}
@@ -79,15 +80,9 @@ Password:
 
 Login:
 https://propythonsolutions.netlify.app
-
-Regards,
-ProPython Solutions
 """,
-
-            from_email=settings.EMAIL_HOST_USER,
-
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[student.email],
-
             fail_silently=False,
         )
 
@@ -97,11 +92,13 @@ ProPython Solutions
 
     except Exception as e:
 
-        print("EMAIL ERROR:", repr(e))
+        import traceback
+
+        print("=" * 60)
+        print(traceback.format_exc())
+        print("=" * 60)
 
         return Response({
             "success": False,
             "error": str(e)
         }, status=500)
-    
-    
