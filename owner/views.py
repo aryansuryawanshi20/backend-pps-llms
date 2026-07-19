@@ -61,35 +61,35 @@ def approve_student(request):
         student.approved = True
         student.save()
 
-        send_mail(
-            subject="Welcome To ProPython Solutions",
+#         send_mail(
+#             subject="Welcome To ProPython Solutions",
 
-            message=f"""
-Hello {student.name},
+#             message=f"""
+# Hello {student.name},
 
-Congratulations!
+# Congratulations!
 
-Your account has been approved.
+# Your account has been approved.
 
-Username:
-{student.username}
+# Username:
+# {student.username}
 
-Password:
-{student.password}
+# Password:
+# {student.password}
 
-Login:
-https://propythonsolutions.netlify.app
+# Login:
+# https://propythonsolutions.netlify.app
 
-Regards,
-ProPython Solutions
-""",
+# Regards,
+# ProPython Solutions
+# """,
 
-            from_email=settings.EMAIL_HOST_USER,
+#             from_email=settings.EMAIL_HOST_USER,
 
-            recipient_list=[student.email],
+#             recipient_list=[student.email],
 
-            fail_silently=False,
-        )
+#             fail_silently=False,
+#         )
 
         return Response({
             "success": True
