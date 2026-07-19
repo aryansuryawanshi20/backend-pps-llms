@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .models import Student
 from .serializers import StudentSerializer
 from django.core.mail import send_mail
+from django.conf import settings
 
 import random
 import string
@@ -51,53 +52,56 @@ def generate_password():
 
 def approve_student(request):
 
-    student = Student.objects.get(
+    try:
 
-        id=request.data["id"]
+        student = Student.objects.get(id=request.data["id"])
 
-    )
+        student.username = "PPS" + str(student.id).zfill(4)
+        student.password = generate_password()
+        student.approved = True
+        student.save()
 
-    student.username = "PPS" + str(student.id).zfill(4)
+        send_mail(
+            subject="Welcome To ProPython Solutions",
 
-    student.password = generate_password()
+            message=f"""
+Hello {student.name},
 
-    student.approved = True
+Congratulations!
 
-    student.save()
-    send_mail(
-        "Welcome To ProPython Solutions",
-        f"""
+Your account has been approved.
 
-    Hello {student.name},
+Username:
+{student.username}
 
-    Congratulations!
+Password:
+{student.password}
 
-    Your account has been approved.
+Login:
+https://propythonsolutions.netlify.app
 
-    Username:
-    {student.username}
+Regards,
+ProPython Solutions
+""",
 
-    Password:
-    {student.password}
+            from_email=settings.EMAIL_HOST_USER,
 
-    Login:
-    https://propythonsolutions.netlify.app
+            recipient_list=[student.email],
 
-    Regards,
-    ProPython Solutions
+            fail_silently=False,
+        )
 
-    """,
-        None,
+        return Response({
+            "success": True
+        })
 
-        [student.email],
+    except Exception as e:
 
-       fail_silently=False
+        print("EMAIL ERROR:", repr(e))
 
-    )
-
-
-    return Response({
-
-        "success":True
-
-    })
+        return Response({
+            "success": False,
+            "error": str(e)
+        }, status=500)
+    
+    
