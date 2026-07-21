@@ -67,18 +67,18 @@ def approve_student(request):
         
         print("Mail Started")
 
-        send_mail(
-            subject="Welcome To ProPython Solutions",
-            message=f"""
-            Hello {student.name},Congratulations!
-            Username:{student.username}
-            Password:{student.password}
-            Login:https://propythonsolutions.netlify.app""",
+        # send_mail(
+        #     subject="Welcome To ProPython Solutions",
+        #     message=f"""
+        #     Hello {student.name},Congratulations!
+        #     Username:{student.username}
+        #     Password:{student.password}
+        #     Login:https://propythonsolutions.netlify.app""",
             
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[student.email],
-            fail_silently=False,
-        )
+        #     from_email=settings.DEFAULT_FROM_EMAIL,
+        #     recipient_list=[student.email],
+        #     fail_silently=False,
+        # )
         print("mail ended")
 
         return Response({
