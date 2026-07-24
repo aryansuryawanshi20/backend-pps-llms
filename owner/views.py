@@ -7,6 +7,9 @@ from .models import Student
 from .serializers import StudentSerializer
 from django.core.mail import send_mail
 from django.conf import settings
+import requests
+import json
+import os
 
 import random
 import string
@@ -50,9 +53,7 @@ def generate_password():
 
 @api_view(["POST"])
 def approve_student(request):
-
     try:
-
         student = Student.objects.get(id=request.data["id"])
 
         student.username = "PPS" + str(student.id).zfill(4)
@@ -60,40 +61,78 @@ def approve_student(request):
         student.approved = True
         student.save()
 
-        print("HOST:", settings.EMAIL_HOST)
-        print("PORT:", settings.EMAIL_PORT)
-        print("USER:", settings.EMAIL_HOST_USER)
-        print("TLS:", settings.EMAIL_USE_TLS)
-        
-        print("Mail Started")
+        headers = {
+            "accept": "application/json",
+            "api-key": os.getenv("BREVO_API_KEY"),
+            "content-type": "application/json",
+        }
 
-        # send_mail(
-        #     subject="Welcome To ProPython Solutions",
-        #     message=f"""
-        #     Hello {student.name},Congratulations!
-        #     Username:{student.username}
-        #     Password:{student.password}
-        #     Login:https://propythonsolutions.netlify.app""",
-            
-        #     from_email=settings.DEFAULT_FROM_EMAIL,
-        #     recipient_list=[student.email],
-        #     fail_silently=False,
-        # )
-        print("mail ended")
+        payload = {
+            "sender": {
+                "name": "ProPython Solutions",
+                "email": "propythonsolutions@gmail.com"
+            },
+            "to": [
+                {
+                    "email": student.email,
+                    "name": student.name
+                }
+            ],
+            "subject": "Welcome To ProPython Solutions",
+            "htmlContent": f"""
+            <h2>Welcome {student.name}</h2>
 
-        return Response({
-            "success": True
-        })
+            <p>Congratulations! Your account has been approved.</p>
+
+            <h3>Login Details</h3>
+
+            <b>Username:</b> {student.username}<br>
+            <b>Password:</b> {student.password}<br><br>
+
+            <a href="https://propythonsolutions.netlify.app">
+                Login Here
+            </a>
+
+            <br><br>
+
+            Regards,<br>
+            <b>ProPython Solutions</b>
+            """
+        }
+
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers=headers,
+            json=payload
+        )
+
+        print("Brevo Status:", response.status_code)
+        print("Brevo Response:", response.text)
+
+        if response.status_code not in [200, 201, 202]:
+            return Response(
+                {
+                    "success": False,
+                    "error": response.text
+                },
+                status=500
+            )
+
+        return Response(
+            {
+                "success": True
+            }
+        )
 
     except Exception as e:
-
         import traceback
 
-        print("=" * 60)
         print(traceback.format_exc())
-        print("=" * 60)
 
-        return Response({
-            "success": False,
-            "error": str(e)
-        }, status=500)
+        return Response(
+            {
+                "success": False,
+                "error": str(e)
+            },
+            status=500
+        )
