@@ -53,6 +53,7 @@ def generate_password():
 
 @api_view(["POST"])
 def approve_student(request):
+    print("******** USING BREVO API ********")
     try:
         student = Student.objects.get(id=request.data["id"])
 
@@ -101,6 +102,7 @@ def approve_student(request):
         }
 
         response = requests.post(
+            
             "https://api.brevo.com/v3/smtp/email",
             headers=headers,
             json=payload
