@@ -70,7 +70,7 @@ def approve_student(request):
 
         payload = {
             "sender": {
-                "name": "ProPython Solutions",
+                "name": "ProPythonSolutions",
                 "email": "propythonsolutions@gmail.com"
             },
             "to": [
@@ -90,7 +90,7 @@ def approve_student(request):
             <b>Username:</b> {student.username}<br>
             <b>Password:</b> {student.password}<br><br>
 
-            <a href="https://propythonsolutions.netlify.app">
+            <a href="https://propythonsolutions.netlify.app/login">
                 Login Here
             </a>
 
