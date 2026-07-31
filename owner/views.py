@@ -13,7 +13,7 @@ import os
 
 import random
 import string
-
+from django.db.models import Count
 
 class StudentList(generics.ListCreateAPIView):
     queryset = Student.objects.all()
@@ -138,3 +138,60 @@ def approve_student(request):
             },
             status=500
         )
+@api_view(["GET"])
+def dashboard_data(request):
+
+    data = {
+
+        "total_students": Student.objects.count(),
+
+        "approved_students": Student.objects.filter(
+            approved=True
+        ).count(),
+
+        "pending_students": Student.objects.filter(
+            approved=False
+        ).count(),
+
+        "total_courses": Course.objects.count(),
+
+        "total_videos": Video.objects.count(),
+
+        "approved_list": StudentSerializer(
+
+            Student.objects.filter(
+                approved=True
+            ).order_by("-created"),
+
+            many=True
+
+        ).data
+
+    }
+
+    return Response(data)
+
+
+@api_view(["DELETE"])
+def delete_course(request,id):
+
+    try:
+
+        course=Course.objects.get(id=id)
+
+        course.delete()
+
+        return Response({
+
+            "success":True
+
+        })
+
+    except:
+
+        return Response({
+
+            "success":False
+
+        },status=404)        
+        

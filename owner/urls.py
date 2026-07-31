@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import StudentList, CourseList, VideoList
+from .views import *
+
+from .login_views import student_login
 from .login_views import student_login
 from .views import pending_students
 from .views import approve_student
@@ -15,5 +17,7 @@ urlpatterns = [
     
     path("pending-students/",pending_students),
     path("approve-student/",approve_student),
+    path("dashboard/",dashboard_data),
+    path("courses/<int:id>/",delete_course),
 
 ]
